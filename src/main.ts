@@ -6,8 +6,8 @@ const context = canvas.getContext('2d')
 const raioDaBola = 10
 const alturaDaRaquete = 10
 const larguraDaRaquete = 75
-const contagemDeBlocosEmLinha = 6
-const contagemDeBlocosEmColuna = 3
+const contagemDeBlocosEmLinha = 3
+const contagemDeBlocosEmColuna = 1
 const larguraDoBloco = 75
 const alturaDoBloco = 20
 const enchimentoDoBloco = 10
@@ -25,20 +25,24 @@ let esquerdaPressionada = false
 
 let x = canvas.width / 2
 let y = canvas.height - 30
-let dx = 2
-let dy = -2
+let dx = 3
+let dy = -3
 
 let pontos = 0
 let vidas = 3
 
 const blocos: Bloco[][] = []
 
-for (let c = 0; c < contagemDeBlocosEmColuna; c++) {
-  blocos[c] = []
-  for (let l = 0; l < contagemDeBlocosEmLinha; l++) {
-    blocos[c][l] = {x: 0, y: 0, estado: 1}
+function reiniciarBlocos() {
+  for (let c = 0; c < contagemDeBlocosEmColuna; c++) {
+    blocos[c] = []
+    for (let l = 0; l < contagemDeBlocosEmLinha; l++) {
+      blocos[c][l] = {x: 0, y: 0, estado: 1}
+    }
   }
 }
+
+reiniciarBlocos()
 
 document.onkeydown = (e) => {
   if (e.code === 'ArrowRight') {
@@ -77,8 +81,14 @@ function detectaColisao() {
           bloco.estado = 0
           pontos++
 
-          if (pontos == contagemDeBlocosEmLinha * contagemDeBlocosEmColuna) {
-            alert('Você ganhou, parabéns')
+          if (pontos === contagemDeBlocosEmLinha * contagemDeBlocosEmColuna) {
+            alert('Você ganhou, parabéns!')
+            dx *= 1.2
+            dy *= 1.2
+            reiniciarBlocos()
+            pontos = 0
+            x = canvas.width / 2
+            y = canvas.height - 30
           }
         }
       }
@@ -122,7 +132,7 @@ function desenhaVidas() {
 function desenhaBlocos() {
   for (let c = 0; c < contagemDeBlocosEmColuna; c++) {
     for (let r = 0; r < contagemDeBlocosEmLinha; r++) {
-      if (blocos[c][r].estado == 1) {
+      if (blocos[c][r].estado === 1) {
         const blocoX =
           r * (larguraDoBloco + enchimentoDoBloco) + lateralEsquerdaDoBloco
 
